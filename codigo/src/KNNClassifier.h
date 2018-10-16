@@ -1,7 +1,7 @@
 #ifndef GASTICODES_KNNCLASSIFIER_H
 #define GASTICODES_KNNCLASSIFIER_H
 
-#include "vector_builder.h"
+#include "../src_catedra/vector_builder.h"
 #include <math.h>
 #include <algorithm>
 
@@ -30,7 +30,6 @@ bool KNNClassifier::predict(VectorizedEntry &x, int k) {
     for(const auto& pair : this->_train_entries){
         norms.push_back(norm(vector_substraction(x, pair.second)));
     }
-
     //Ordeno el vector
     sort(norms.begin(), norms.end(),[this] (pair<double, bool> a, pair<double, bool> b) {return cmp(a, b);});
 
@@ -55,7 +54,7 @@ bool KNNClassifier::cmp(pair<double, bool> a, pair<double, bool> b) {
 VectorizedEntry KNNClassifier::vector_substraction(VectorizedEntry x, VectorizedEntry b) {
     VectorizedEntry ans;
     for(unsigned int i = 0; i < x.bag_of_words.size(); i++){
-        ans.bag_of_words[i] = x.bag_of_words[i] - b.bag_of_words[i];
+        ans.bag_of_words.push_back(x.bag_of_words[i] - b.bag_of_words[i]);
     }
     ans.is_positive = b.is_positive;
     return ans;
