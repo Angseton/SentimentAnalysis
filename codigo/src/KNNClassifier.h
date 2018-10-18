@@ -1,7 +1,7 @@
 #ifndef GASTICODES_KNNCLASSIFIER_H
 #define GASTICODES_KNNCLASSIFIER_H
 
-#include "../src_catedra/vector_builder.h"
+#include "vector_builder.h"
 #include <math.h>
 #include <algorithm>
 
@@ -30,6 +30,7 @@ bool KNNClassifier::predict(VectorizedEntry &x, int k) {
     for(const auto& pair : this->_train_entries){
         norms.push_back(norm(vector_substraction(x, pair.second)));
     }
+
     //Ordeno el vector
     sort(norms.begin(), norms.end(),[this] (pair<double, bool> a, pair<double, bool> b) {return cmp(a, b);});
 
@@ -48,11 +49,13 @@ bool KNNClassifier::mode(vector<pair<double, bool>> norms, int k){
 }
 
 bool KNNClassifier::cmp(pair<double, bool> a, pair<double, bool> b) {
-    return (a.first > b.first);
+    return (a.first < b.first);
 }
 
 VectorizedEntry KNNClassifier::vector_substraction(VectorizedEntry x, VectorizedEntry b) {
     VectorizedEntry ans;
+    vector<double> ans_bag_of_words;
+    ans.bag_of_words = ans_bag_of_words;
     for(unsigned int i = 0; i < x.bag_of_words.size(); i++){
         ans.bag_of_words.push_back(x.bag_of_words[i] - b.bag_of_words[i]);
     }
@@ -65,6 +68,7 @@ pair<double, bool> KNNClassifier::norm(VectorizedEntry a) {
     for(auto& a_i : a.bag_of_words){
         squareSum += pow(a_i, 2.0);
     }
+
     return make_pair(sqrt(squareSum), a.is_positive);
 }
 
