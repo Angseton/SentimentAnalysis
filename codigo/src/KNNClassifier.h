@@ -1,7 +1,7 @@
 #ifndef GASTICODES_KNNCLASSIFIER_H
 #define GASTICODES_KNNCLASSIFIER_H
 
-#include "vector_builder.h"
+#include "../src_catedra/vector_builder.h"
 #include <math.h>
 #include <algorithm>
 
