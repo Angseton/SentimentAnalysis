@@ -38,7 +38,11 @@ void SentimentPredictor::predictDataSet(VectorizedEntriesMap& trainSet, Vectoriz
         for(auto& pair : trainSet){
             transformedTrainSet[pair.first] = pca.transform(pair.second, alpha);
         }
-        data = applyKNN(transformedTrainSet, testSet, method, k, alpha, output_file);
+        VectorizedEntriesMap transformedTestSet;
+        for(auto& pair : testSet){
+            transformedTestSet[pair.first] = pca.transform(pair.second, alpha);
+        }
+        data = applyKNN(transformedTrainSet, transformedTestSet, method, k, alpha, output_file);
     } else {
         throw std::domain_error("No such method.");
     }
