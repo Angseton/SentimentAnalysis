@@ -17,7 +17,7 @@ add_subdirectory(tests/google-test)
 # Creamos el ejecutable para correr los tests
 add_executable(correrTests ${TEST_SOURCES} ${SOURCE_FILES})
 
-add_executable(tp2 src/main.cpp src/KNNClassifier.h src/PCA.h)
+add_executable(tp2 src/main.cpp src/KNNClassifier.h src/PCA.h src/SentimentPredictor.h)
 
 if (APPLE)
     add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
