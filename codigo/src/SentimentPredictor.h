@@ -68,6 +68,7 @@ void SentimentPredictor::predictDataSet(VectorizedEntriesMap& trainSet, Vectoriz
         ofs << "Recall: " << (data.tp / (double)(data.tp + data.fp)) << endl;
         ofs << "Precision: " << (data.tp / (double)(data.tp + data.fn)) << endl;
         ofs << "Elapsed time: " << elapsedTime << endl;
+        ofs.close();
     }
 }
 
