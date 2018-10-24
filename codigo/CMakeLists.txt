@@ -19,6 +19,8 @@ add_executable(correrTests ${TEST_SOURCES} ${SOURCE_FILES})
 
 add_executable(tp2 src/main.cpp src/KNNClassifier.h src/PCA.h src/SentimentPredictor.h)
 
+add_executable(power_method_test src/power_method_test.cpp src/PCA.h)
+
 if (APPLE)
     add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
     add_definitions(-D__GLIBCXX__)

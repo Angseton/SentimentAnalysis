@@ -3,11 +3,13 @@
 
 #include <functional>
 #include <iostream>
+#include <string>
 
 #include "types.h"
 #include "reader.h"
 
 void build_vectorized_datasets(
+        const std::string & entries_path,
         VectorizedEntriesMap & train_vectorized_entries,
         VectorizedEntriesMap & test_vectorized_entries,
         const std::function<bool(int token, const FrecuencyVocabularyMap & vocabulary)> & filter_out) {
@@ -17,7 +19,7 @@ void build_vectorized_datasets(
      **/
     TokenizedEntriesMap train_entries;
     TokenizedEntriesMap test_entries;
-    read_entries(train_entries, test_entries);
+    read_entries(entries_path, train_entries, test_entries);
 
     const FrecuencyVocabularyMap vocabulary = read_vocabulary();
 
@@ -58,9 +60,10 @@ void build_vectorized_datasets(
     count_words(tokens_to_indexes, test_entries);
     const int N = tokens_to_indexes.size();
 
-    auto translate_tokenized_entries = [&tokens_to_indexes, &N] (const TokenizedEntriesMap & entries) {
+    auto translate_tokenized_entries = [&tokens_to_indexes, &N] (
+            VectorizedEntriesMap & vectorized_entries,
+            const TokenizedEntriesMap & entries) {
         std::cerr << "Traduciendo tokens a vectores..." << '\r';
-        VectorizedEntriesMap vectorized_entries;
         for (auto entry = entries.begin(); entry != entries.end(); entry++) {
             const int review_id = entry->first;
             const std::vector<int> & tokens = entry->second.tokens;
@@ -73,12 +76,11 @@ void build_vectorized_datasets(
                 vectorized_entries[review_id].bag_of_words[tokens_to_indexes[token]] += step;
             }
         }
-
         std::cerr << "                                " << '\r';
-        return vectorized_entries;
     };
-    train_vectorized_entries = translate_tokenized_entries(train_entries);
-    test_vectorized_entries = translate_tokenized_entries(test_entries);
+
+    translate_tokenized_entries(train_vectorized_entries, train_entries);
+    translate_tokenized_entries(test_vectorized_entries, test_entries);
 }
 
 
