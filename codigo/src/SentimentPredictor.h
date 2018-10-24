@@ -55,23 +55,20 @@ void SentimentPredictor::predictDataSet(VectorizedEntriesMap& trainSet, Vectoriz
     if(log){
         ofstream ofs;
         ofs.open("log.txt");
+        double recall = (data.tp / (double)(data.tp + data.fp));
+        double precision = (data.tp / (double)(data.tp + data.fn));
         if(method == 1){
-            //kNN + PCA, we output alpha
-            ofs << "El método utilizado fue: kNN + PCA" << endl;
-            ofs << "Alpha: " << alpha << endl;
+        	//KNN + PCA
+        	ofs << "Method, k, Alpha, Test Size, tp, fp, tn, fn, Recall, Precision, Elapsed Time " << endl;
+        	ofs << "KNN + PCA" << ", " << k << ", " << alpha << ", " << data.amount << ", " << data.tp << ", " << data.fp << ", " << data.tn << ", " 
+        	<< data.fn << ", " << recall << ", " << precision << ", " << elapsedTime << endl;
         } else {
-            ofs << "El método utilizado fue: kNN" << endl;
-            ofs << "Alpha: --" << endl;
+        	//Only KNN
+        	ofs << "Method, k, Alpha, Test Size, tp, fp, tn, fn, Recall, Precision, Elapsed Time " << endl;
+        	ofs << "KNN" << ", " << k << ", " << "--" << ", " << data.amount << ", " << data.tp << ", " << data.fp << ", " << data.tn << ", " 
+        	<< data.fn << ", " << recall << ", " << precision << ", " << elapsedTime << endl;
         }
-        ofs << "k: " << k << endl;
-        ofs << "Tamaño del test: " << data.amount << endl;
-        ofs << "tp: " << data.tp << endl;
-        ofs << "fp: " << data.fp << endl;
-        ofs << "tn: " << data.tn << endl;
-        ofs << "fn: " << data.fn << endl;
-        ofs << "Recall: " << (data.tp / (double)(data.tp + data.fp)) << endl;
-        ofs << "Precision: " << (data.tp / (double)(data.tp + data.fn)) << endl;
-        ofs << "Elapsed time: " << elapsedTime << endl;
+        ofs.close();
     }
 }
 
@@ -83,7 +80,7 @@ typename SentimentPredictor::dataInfo SentimentPredictor::applyKNN(VectorizedEnt
     KNNClassifier knn = KNNClassifier(trainSet);
     ofstream ofs;
     ofs.open(output_file);
-    ofs << "Test entry" << " Prediction" << endl;
+    ofs << "Test entry, " << "Prediction" << endl;
     for (auto &pair : testSet) {
         bool prediction = knn.predict(pair.second, k);
         bool realSentiment = pair.second.is_positive;
@@ -92,7 +89,7 @@ typename SentimentPredictor::dataInfo SentimentPredictor::applyKNN(VectorizedEnt
         else if (!realSentiment && prediction) fp++;
         else if (!realSentiment && !prediction) tn++;
         amount++;
-        ofs << pair.first << " " << prediction << endl;
+        ofs << pair.first << ", " << prediction << endl;
     }
     ofs.close();
     printData(tp, fp, tn, fn, amount, method, k, alpha);
