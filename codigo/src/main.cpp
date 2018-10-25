@@ -106,7 +106,7 @@ int main(int argc, char * argv[]){
         amount++;
     }
 
-    std::cerr
+    std::cout
         << "                                    " << std::endl
         << "tp: " << tp << std::endl
         << "fp: " << fp << std::endl

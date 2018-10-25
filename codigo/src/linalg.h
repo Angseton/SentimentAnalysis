@@ -154,7 +154,6 @@ matrix read_matrix_from_file(string fname){
     std::string line;
     std::ifstream infile;
     infile.open(fname);
-    cout << fname << endl;
     if (infile.fail()) throw std::runtime_error("Ocurrió un error al abrir el archivo.");
     std::getline(infile, line);
     int N = stoi(line);
@@ -176,7 +175,6 @@ matrix read_matrix_from_file(string fname){
 void write_matrix_to_file(matrix& M, string fname){
     std::ofstream outfile;
     outfile.open(fname);
-    cout << "Writing matrix to file: "<< fname << endl;
     if (outfile.fail()) throw std::runtime_error("Ocurrió un error al abrir el archivo.");
     outfile << M.size() << "," << M[0].size() << endl;
     for (int i = 0; i < M.size(); ++i){
@@ -192,7 +190,6 @@ void write_matrix_to_file(matrix& M, string fname){
 void write_vector_to_file(vector_t& v, string fname){
     std::ofstream outfile;
     outfile.open(fname);
-    cout << "Writing matrix to file: "<< fname << endl;
     if (outfile.fail()) throw std::runtime_error("Ocurrió un error al abrir el archivo.");
     outfile << v.size() << endl;
     for (int i = 0; i < v.size(); ++i){

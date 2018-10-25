@@ -50,7 +50,7 @@ void PCA::fit(matrix& X){
 		 * then deflate the covariance matrix.
 		 */
 		vector_t v_i = generate_random_guess(M.size());
-		pair<double, vector_t> component = dominant_eigenvalue(M, v_i, 50);
+		pair<double, vector_t> component = dominant_eigenvalue(M, v_i, 30);
 		this->eigenvalues[i] = component.first;
 		this->eigenbasis[i] = component.second;
 		deflate(M, component.second, component.first);
