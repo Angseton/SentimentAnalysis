@@ -25,7 +25,7 @@ int main(int argc, char * argv[]){
     // Generate random guess and compute eigenvector/eigenvalue
     auto start = chrono::system_clock::now();
     vector_t guess = generate_random_guess(N);
-    pair<double, vector_t> res = dominant_eigenvalue(M, guess, niter);
+    pair<double, vector_t> res = dominant_eigenvalue(M, guess, niter, 0);
     auto end = chrono::system_clock::now();
     chrono::duration<double> elapsed_seconds = end-start;
     // Output results to stdout

@@ -1,6 +1,7 @@
 #include <cmath>
 #include <vector>
 #include <random>
+#include <limits>
 #include "../src_catedra/types.h"
 using namespace std;
 
@@ -9,8 +10,8 @@ typedef vector<double> vector_t;
 typedef vector<vector_t> matrix;
 // Random number generation
 std::default_random_engine generator;
-//std::normal_distribution<double> distribution(0, 1);
-std::uniform_real_distribution<double> distribution(0.0,10.0);
+std::normal_distribution<double> distribution(0, 1);
+// std::uniform_real_distribution<double> distribution(1.0, 10.0);
 
 vector_t dot(matrix& A, vector_t& x){
 	vector_t res = vector_t(A.size());
@@ -49,6 +50,14 @@ double norm(vector_t& v){
 	return norm_2;
 }
 
+double norm_sq(vector_t& v){
+	double norm_2 = 0;
+	for (int i = 0; i < v.size(); ++i){
+		norm_2 += v[i] * v[i];
+	}
+	return norm_2;
+}
+
 double norm_2_distance(vector_t& x, vector_t& y){
 	vector_t sub = vector_t(x.size(), 0);
 	for (int i = 0; i < x.size(); ++i){
@@ -57,9 +66,52 @@ double norm_2_distance(vector_t& x, vector_t& y){
     return norm(sub);
 }
 
+double norm_inf_distance(vector_t& x, vector_t& y){
+	double max_diff = 0;
+	double d;
+	for (int i = 0; i < x.size(); ++i){
+		d = abs(x[i] - y[i]);
+		if (d > max_diff) max_diff = d;
+	}
+    return max_diff;
+}
+
 void normalize(vector_t& v){
 	double norm_2 = norm(v);
 	for (int i = 0; i < v.size(); ++i) v[i] /= norm_2;
+}
+
+pair<double, vector_t> dominant_eigenvalue(matrix& M, vector_t guess, int iter_max, double delta_max){
+	vector_t v = guess;
+	vector_t old_v = v;
+	double delta = std::numeric_limits<double>::infinity();
+	for (int i = 0; i < iter_max && delta > delta_max; ++i){
+		old_v = v;
+		v = dot(M, v);
+		normalize(v);
+		delta = norm_inf_distance(old_v, v);
+	}
+	vector_t Mv = dot(M, v);
+	double lambda = transpose_dot(v, Mv) / (pow(norm(v), 2));
+	return make_pair(lambda, v);
+}
+
+void deflate(matrix& M, vector_t& v, double lambda){
+	for (int i = 0; i < M.size(); ++i){
+		for (int j = 0; j < M.size(); ++j){
+			M[i][j] -= lambda * v[i] * v[j];
+		}
+	}
+}
+
+vector_t generate_random_guess(int N){
+	/*
+	 * Generate a random vector by sampling each
+	 * component from a standard normal distribution.
+	 */
+	vector_t res = vector_t(N, 0);
+	for (int i = 0; i < N; ++i) res[i] = distribution(generator);
+	return res;
 }
 
 vector_t sample_mean(matrix& samples){
@@ -99,34 +151,6 @@ matrix covariance_matrix(matrix& samples){
 	return Cov;
 }
 
-pair<double, vector_t> dominant_eigenvalue(matrix& M, vector_t guess, int niter){
-	vector_t v = guess;
-	for (int i = 0; i < niter; ++i){
-		v = dot(M, v);
-		normalize(v);
-	}
-	vector_t Mv = dot(M, v);
-	double lambda = transpose_dot(v, Mv) / (pow(norm(v), 2));
-	return make_pair(lambda, v);
-}
-
-void deflate(matrix& M, vector_t& v, double lambda){
-	for (int i = 0; i < M.size(); ++i){
-		for (int j = 0; j < M.size(); ++j){
-			M[i][j] -= lambda * v[i] * v[j];
-		}
-	}
-}
-
-vector_t generate_random_guess(int N){
-	/*
-	 * Generate a random vector by sampling each
-	 * component from a standard normal distribution.
-	 */
-	vector_t res = vector_t(N, 0);
-	for (int i = 0; i < N; ++i) res[i] = distribution(generator);
-	return res;
-}
 
 void print_matrix(matrix& A){
 	std::cout << "---------" << std::endl;
