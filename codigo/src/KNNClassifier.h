@@ -19,6 +19,7 @@ private:
     pair<double, bool> norm(VectorizedEntry a);
     bool cmp(pair<double, bool> a, pair<double, bool> b);
     bool mode(vector<pair<double, bool>> norms, int k);
+    pair<double, bool> distance(const VectorizedEntry& x, const VectorizedEntry& sample);
 
 };
 
@@ -28,9 +29,8 @@ bool KNNClassifier::predict(VectorizedEntry &x, int k) {
     //Armo un vector de normas con sus flags
     vector<pair<double, bool>> norms;
     for(const auto& pair : this->_train_entries){
-        norms.push_back(norm(vector_substraction(x, pair.second)));
+        norms.push_back(distance(pair.second, x));
     }
-
     //Ordeno el vector
     sort(norms.begin(), norms.end(),[this] (pair<double, bool> a, pair<double, bool> b) {return cmp(a, b);});
 
@@ -52,24 +52,13 @@ bool KNNClassifier::cmp(pair<double, bool> a, pair<double, bool> b) {
     return (a.first < b.first);
 }
 
-VectorizedEntry KNNClassifier::vector_substraction(VectorizedEntry x, VectorizedEntry b) {
-    VectorizedEntry ans;
-    vector<double> ans_bag_of_words;
-    ans.bag_of_words = ans_bag_of_words;
-    for(unsigned int i = 0; i < x.bag_of_words.size(); i++){
-        ans.bag_of_words.push_back(x.bag_of_words[i] - b.bag_of_words[i]);
-    }
-    ans.is_positive = b.is_positive;
-    return ans;
-}
 
-pair<double, bool> KNNClassifier::norm(VectorizedEntry a) {
+pair<double, bool> KNNClassifier::distance(const VectorizedEntry& x, const VectorizedEntry& sample) {
     double squareSum = 0;
-    for(auto& a_i : a.bag_of_words){
-        squareSum += pow(a_i, 2.0);
+    for(unsigned int i = 0; i < x.bag_of_words.size(); i++){
+        squareSum += pow(x.bag_of_words[i] - sample.bag_of_words[i], 2.0);
     }
-
-    return make_pair(sqrt(squareSum), a.is_positive);
+    return make_pair(sqrt(squareSum), x.is_positive);
 }
 
 #endif //GASTICODES_KNNCLASSIFIER_H

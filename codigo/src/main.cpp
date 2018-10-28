@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <iostream>
 #include <stdlib.h>
 #include <chrono>
 #include "KNNClassifier.h"
@@ -76,6 +77,8 @@ int main(int argc, char * argv[]){
     
     build_vectorized_datasets(dataset_file, train_entries, test_entries, filter_out);
     
+    auto start = chrono::system_clock::now();
+
     switch(mode){
         case 0: // KNN no pca
             transformed_train_entries = train_entries;
@@ -106,6 +109,9 @@ int main(int argc, char * argv[]){
         amount++;
     }
 
+    auto end = chrono::system_clock::now();
+    chrono::duration<double> elapsed_seconds = end-start;
+
     std::cout
         << "                                    " << std::endl
         << "tp: " << tp << std::endl
@@ -115,6 +121,7 @@ int main(int argc, char * argv[]){
         << "Accuracy: " << ((tp + tn)/ (double)(tp + fp + tn + fn)) << std::endl
         << "Precision: " << (tp / (double)(tp + fn)) << std::endl
         << "Recall: " << (tp / (double)(tp + fp)) << std::endl
-        << "F1: " << ((2 * tp) / (double)(2 * tp + fp + fn)) << std::endl;
+        << "F1: " << ((2 * tp) / (double)(2 * tp + fp + fn)) << std::endl
+        << "Time: "<< elapsed_seconds.count() << endl;
     return 0;
 }
