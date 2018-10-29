@@ -101,7 +101,7 @@ int main(int argc, char * argv[]){
     for (auto it = transformed_test_entries.begin(); it != transformed_test_entries.end(); it++) {
         std::cerr << "Prediciendo " << amount << " / " << transformed_test_entries.size() << '\r';
         bool label = it->second.is_positive;
-        bool predi = clf.predict(it->second, 5);
+        bool predi = clf.predict(it->second, k);
         if (label && predi) tp++;
         else if (label && !predi) fn++;
         else if (!label && predi) fp++;
