@@ -18,7 +18,7 @@ private:
     VectorizedEntry vector_substraction(VectorizedEntry x, VectorizedEntry b);
     pair<double, bool> norm(VectorizedEntry a);
     bool cmp(pair<double, bool> a, pair<double, bool> b);
-    bool mode(vector<pair<double, bool>> norms, int k);
+    bool mode(vector<pair<double, bool>>& norms, int k);
     pair<double, bool> distance(const VectorizedEntry& x, const VectorizedEntry& sample);
 
 };
@@ -39,7 +39,7 @@ bool KNNClassifier::predict(VectorizedEntry &x, int k) {
 
 }
 
-bool KNNClassifier::mode(vector<pair<double, bool>> norms, int k){
+bool KNNClassifier::mode(vector<pair<double, bool>>& norms, int k){
     unsigned int positiveCount = 0;
     for(unsigned int i = 0; i < k; i++){
         if(norms[i].second) positiveCount++;
