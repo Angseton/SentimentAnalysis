@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <iostream>
+#include <fstream>
 #include <stdlib.h>
 #include <chrono>
 #include "KNNClassifier.h"
@@ -26,7 +27,7 @@ int main(int argc, char * argv[]){
     int alpha = 30;
     double threshold_frecuency_low = 0.01;
     double threshold_frecuency_high = 0.99;
-    string output_file;
+    string output_file = "Predictions.txt";
     string basis_file;
 
     if(cmdOptionExists(argv, argv+argc, "-i")){
@@ -96,7 +97,8 @@ int main(int argc, char * argv[]){
     int tn = 0;
     int fn = 0;
     int amount = 0;
-
+    ofstream myfile;
+    myfile.open(output_file);
     KNNClassifier clf = KNNClassifier(transformed_train_entries);
     for (auto it = transformed_test_entries.begin(); it != transformed_test_entries.end(); it++) {
         std::cerr << "Prediciendo " << amount << " / " << transformed_test_entries.size() << '\r';
@@ -107,7 +109,9 @@ int main(int argc, char * argv[]){
         else if (!label && predi) fp++;
         else if (!label && !predi) tn++;
         amount++;
+        myfile << it->first << " " << predi << std::endl;
     }
+ 	myfile.close();
 
     auto end = chrono::system_clock::now();
     chrono::duration<double> elapsed_seconds = end-start;
