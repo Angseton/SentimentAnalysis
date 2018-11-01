@@ -123,8 +123,8 @@ int main(int argc, char * argv[]){
         << "tn: " << tn << std::endl
         << "fn: " << fn << std::endl
         << "Accuracy: " << ((tp + tn)/ (double)(tp + fp + tn + fn)) << std::endl
-        << "Precision: " << (tp / (double)(tp + fn)) << std::endl
-        << "Recall: " << (tp / (double)(tp + fp)) << std::endl
+        << "Precision: " << (tp / (double)(tp + fp)) << std::endl
+        << "Recall: " << (tp / (double)(tp + fn)) << std::endl
         << "F1: " << ((2 * tp) / (double)(2 * tp + fp + fn)) << std::endl
         << "Time: "<< elapsed_seconds.count() << endl;
     return 0;
